@@ -76,6 +76,12 @@ func LoadMultiYamlOrJson[T any](file string, list *[]T) (err error) {
 	if data, err = os.ReadFile(file); err != nil {
 		return
 	}
+	LoadMultiYamlOrJsonFromBytes(data, list)
+	return
+}
+
+// LoadMultiYamlOrJsonFromBytes loads multi yamls
+func LoadMultiYamlOrJsonFromBytes[T any](data []byte, list *[]T) (err error) {
 	parts := strings.Split(string(data), "---")
 	for _, y := range parts {
 		if len(strings.TrimSpace(y)) == 0 {
