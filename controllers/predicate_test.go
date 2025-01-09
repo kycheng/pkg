@@ -90,3 +90,121 @@ func TestSecretDataChangedPredicate(t *testing.T) {
 
 	}
 }
+
+func TestAnnotationChangedPredicate(t *testing.T) {
+	tests := []struct {
+		name           string
+		keys           []string
+		oldAnnotations map[string]string
+		newAnnotations map[string]string
+		eventType      string // "create", "update", "delete", "generic"
+		expected       bool
+	}{
+		{
+			name:           "create event - no keys specified",
+			keys:           nil,
+			oldAnnotations: nil,
+			newAnnotations: map[string]string{"test": "value"},
+			eventType:      "create",
+			expected:       true,
+		},
+		{
+			name:           "create event - no keys specified with nil",
+			keys:           nil,
+			oldAnnotations: nil,
+			newAnnotations: nil,
+			eventType:      "create",
+			expected:       true,
+		},
+		{
+			name:           "create event - specific key changed",
+			keys:           []string{"test"},
+			oldAnnotations: nil,
+			newAnnotations: map[string]string{"test": "value"},
+			eventType:      "create",
+			expected:       true,
+		},
+		{
+			name:           "create event - irrelevant key changed",
+			keys:           []string{"test"},
+			oldAnnotations: nil,
+			newAnnotations: map[string]string{"other": "value"},
+			eventType:      "create",
+			expected:       false,
+		},
+		{
+			name:           "update event - keys specified will nil",
+			keys:           []string{"test"},
+			oldAnnotations: nil,
+			newAnnotations: nil,
+			eventType:      "update",
+			expected:       false,
+		},
+		{
+			name:           "update event - specific key changed",
+			keys:           []string{"test"},
+			oldAnnotations: map[string]string{"test": "old"},
+			newAnnotations: map[string]string{"test": "new"},
+			eventType:      "update",
+			expected:       true,
+		},
+		{
+			name:           "update event - no change in specified key",
+			keys:           []string{"test"},
+			oldAnnotations: map[string]string{"test": "same"},
+			newAnnotations: map[string]string{"test": "same"},
+			eventType:      "update",
+			expected:       false,
+		},
+		{
+			name:           "delete event - specific key exists",
+			keys:           []string{"test"},
+			oldAnnotations: map[string]string{"test": "value"},
+			newAnnotations: nil,
+			eventType:      "delete",
+			expected:       true,
+		},
+		{
+			name:           "generic event - specific key exists",
+			keys:           []string{"test"},
+			oldAnnotations: map[string]string{"test": "value"},
+			newAnnotations: nil,
+			eventType:      "generic",
+			expected:       true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewGomegaWithT(t)
+
+			pred := AnnotationChangedPredicate{
+				Keys: tt.keys,
+			}
+
+			var result bool
+			switch tt.eventType {
+			case "create":
+				obj := &corev1.Pod{}
+				obj.SetAnnotations(tt.newAnnotations)
+				result = pred.Create(event.CreateEvent{Object: obj})
+			case "update":
+				oldObj := &corev1.Pod{}
+				newObj := &corev1.Pod{}
+				oldObj.SetAnnotations(tt.oldAnnotations)
+				newObj.SetAnnotations(tt.newAnnotations)
+				result = pred.Update(event.UpdateEvent{ObjectOld: oldObj, ObjectNew: newObj})
+			case "delete":
+				obj := &corev1.Pod{}
+				obj.SetAnnotations(tt.oldAnnotations)
+				result = pred.Delete(event.DeleteEvent{Object: obj})
+			case "generic":
+				obj := &corev1.Pod{}
+				obj.SetAnnotations(tt.oldAnnotations)
+				result = pred.Generic(event.GenericEvent{Object: obj})
+			}
+
+			g.Expect(result).Should(Equal(tt.expected))
+		})
+	}
+}
