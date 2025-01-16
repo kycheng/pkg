@@ -37,6 +37,9 @@ const (
 	// DeletedByAnnotationKey annotation key to store resource update username
 	DeletedByAnnotationKey = "katanomi.dev/deletedBy"
 
+	// TriggeredByAnnotationKey annotation key to store resource update username
+	TriggeredByAnnotationKey = "cpaas.io/triggeredBy"
+
 	// UIDescriptorsAnnotationKey annotation for storing ui descriptors in resources
 	UIDescriptorsAnnotationKey = "ui.katanomi.dev/descriptors"
 )
