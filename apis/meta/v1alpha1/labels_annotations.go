@@ -19,24 +19,24 @@ package v1alpha1
 // Common Annotations
 const (
 	// DisplayNameAnnotationKey display name for objects
-	DisplayNameAnnotationKey = "alauda.io/displayName"
+	DisplayNameAnnotationKey = "cpaas.io/displayName"
 	// CreatedTimeAnnotationKey creation time for objects
-	CreatedTimeAnnotationKey = "alauda.io/creationTime"
+	CreatedTimeAnnotationKey = "cpaas.io/creationTime"
 	// UpdatedTimeAnnotationKey update time for objects
-	UpdatedTimeAnnotationKey = "alauda.io/updateTime"
+	UpdatedTimeAnnotationKey = "cpaas.io/updateTime"
 	// DeletedTimeAnnotationKey deletion time for objects
-	DeletedTimeAnnotationKey = "alauda.io/deletionTime"
+	DeletedTimeAnnotationKey = "cpaas.io/deletionTime"
 
 	// NamespaceAnnotationKey namespace of objects
-	NamespaceAnnotationKey = "alauda.io/namespace"
+	NamespaceAnnotationKey = "cpaas.io/namespace"
 
 	// CreatedByAnnotationKey annotation key to store resource creation username
-	CreatedByAnnotationKey = "alauda.io/createdBy"
+	CreatedByAnnotationKey = "cpaas.io/createdBy"
 	// UpdatedByAnnotationKey annotation key to store resource update username
-	UpdatedByAnnotationKey = "alauda.io/updatedBy"
+	UpdatedByAnnotationKey = "cpaas.io/updatedBy"
 	// DeletedByAnnotationKey annotation key to store resource update username
-	DeletedByAnnotationKey = "alauda.io/deletedBy"
+	DeletedByAnnotationKey = "cpaas.io/deletedBy"
 
 	// UIDescriptorsAnnotationKey annotation for storing ui descriptors in resources
-	UIDescriptorsAnnotationKey = "ui.alauda.io/descriptors"
+	UIDescriptorsAnnotationKey = "ui.cpaas.io/descriptors"
 )

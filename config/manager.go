@@ -35,7 +35,7 @@ import (
 )
 
 const (
-	defaultConfig = "config"
+	defaultConfig = "alaudadevops-config"
 	configNameEnv = "CONFIG_NAME"
 )
 
