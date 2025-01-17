@@ -19,27 +19,27 @@ package v1alpha1
 // Common Annotations
 const (
 	// DisplayNameAnnotationKey display name for objects
-	DisplayNameAnnotationKey = "katanomi.dev/displayName"
+	DisplayNameAnnotationKey = "cpaas.io/displayName"
 	// CreatedTimeAnnotationKey creation time for objects
-	CreatedTimeAnnotationKey = "katanomi.dev/creationTime"
+	CreatedTimeAnnotationKey = "cpaas.io/creationTime"
 	// UpdatedTimeAnnotationKey update time for objects
-	UpdatedTimeAnnotationKey = "katanomi.dev/updateTime"
+	UpdatedTimeAnnotationKey = "cpaas.io/updateTime"
 	// DeletedTimeAnnotationKey deletion time for objects
-	DeletedTimeAnnotationKey = "katanomi.dev/deletionTime"
+	DeletedTimeAnnotationKey = "cpaas.io/deletionTime"
 
 	// NamespaceAnnotationKey namespace of objects
-	NamespaceAnnotationKey = "katanomi.dev/namespace"
+	NamespaceAnnotationKey = "cpaas.io/namespace"
 
 	// CreatedByAnnotationKey annotation key to store resource creation username
-	CreatedByAnnotationKey = "katanomi.dev/createdBy"
+	CreatedByAnnotationKey = "cpaas.io/createdBy"
 	// UpdatedByAnnotationKey annotation key to store resource update username
-	UpdatedByAnnotationKey = "katanomi.dev/updatedBy"
+	UpdatedByAnnotationKey = "cpaas.io/updatedBy"
 	// DeletedByAnnotationKey annotation key to store resource update username
-	DeletedByAnnotationKey = "katanomi.dev/deletedBy"
+	DeletedByAnnotationKey = "cpaas.io/deletedBy"
 
 	// TriggeredByAnnotationKey annotation key to store resource update username
 	TriggeredByAnnotationKey = "cpaas.io/triggeredBy"
 
 	// UIDescriptorsAnnotationKey annotation for storing ui descriptors in resources
-	UIDescriptorsAnnotationKey = "ui.katanomi.dev/descriptors"
+	UIDescriptorsAnnotationKey = "ui.cpaas.io/descriptors"
 )
