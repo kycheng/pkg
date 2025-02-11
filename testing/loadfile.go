@@ -17,12 +17,13 @@ limitations under the License.
 package testing
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
-	"strings"
 
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -80,21 +81,70 @@ func LoadMultiYamlOrJson[T any](file string, list *[]T) (err error) {
 }
 
 // LoadMultiYamlOrJsonFromBytes loads multi yamls
+// For historical reasons, this method still supports JSON documents separated by ---
+// However, --- is not a valid separator for JSON documents.
+// To be compatible with the previous handling logic, we cannot directly use the k8s built-in multiple document unmarshalling method
+// and need to read line by line to implement it.
 func LoadMultiYamlOrJsonFromBytes[T any](data []byte, list *[]T) (err error) {
-	parts := strings.Split(string(data), "---")
-	for _, y := range parts {
-		if len(strings.TrimSpace(y)) == 0 {
+
+	docs := [][]byte{}
+	var currentDoc = bytes.NewBuffer(make([]byte, 0, 4096))
+
+	reader := bufio.NewReader(bytes.NewReader(data))
+	for {
+		line, err := reader.ReadBytes('\n')
+
+		if err != nil && err != io.EOF {
+			return err
+		}
+
+		if isSeparator(line) {
+			if currentDoc.Len() > 0 {
+				docCopy := make([]byte, currentDoc.Len())
+				copy(docCopy, currentDoc.Bytes())
+				docs = append(docs, docCopy)
+				currentDoc.Reset()
+			}
+		} else {
+			currentDoc.Write(line)
+		}
+
+		if err == io.EOF {
+			if currentDoc.Len() > 0 {
+				docCopy := make([]byte, currentDoc.Len())
+				copy(docCopy, currentDoc.Bytes())
+				docs = append(docs, docCopy)
+				currentDoc.Reset()
+			}
+			break
+		}
+	}
+
+	for _, doc := range docs {
+		if len(bytes.TrimSpace(doc)) == 0 {
 			continue
 		}
 		obj := new(T)
-		err = utilyaml.NewYAMLOrJSONDecoder(bytes.NewReader([]byte(y)), len([]byte(y))).Decode(obj)
+		err = utilyaml.NewYAMLOrJSONDecoder(bytes.NewReader(doc), len(doc)).Decode(obj)
 		if err != nil {
 			return
 		}
+
 		*list = append(*list, *obj)
 	}
-	return
 
+	return nil
+}
+
+func isSeparator(line []byte) bool {
+	trimmed := bytes.TrimSpace(line)
+
+	if !bytes.HasPrefix(trimmed, []byte("---")) {
+		return false
+	}
+
+	rest := bytes.TrimSpace(trimmed[3:])
+	return len(rest) == 0 || rest[0] == '#'
 }
 
 // MustLoadMultiYamlOrJson loads multi yamls or panics if the parse fails.
