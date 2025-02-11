@@ -58,6 +58,7 @@ func TestLoadMultiJson_success(t *testing.T) {
 	cms := []*unstructured.Unstructured{}
 	g.Expect(LoadMultiYamlOrJson("./testdata/loadMultiYaml.configmap.success.json", &cms)).Should(BeNil())
 	g.Expect(cms).To(HaveLen(2))
+	g.Expect([]string{cms[0].GetName(), cms[1].GetName()}).To(ConsistOf([]string{"abc-1", "abc-2"}))
 	g.Expect(cms[0].GetName()).To(Equal("abc-1"))
 	g.Expect(cms[1].GetName()).To(Equal("abc-2"))
 }
@@ -80,6 +81,14 @@ func TestMustLoadMultiYaml_success(t *testing.T) {
 	cms := []corev1.ConfigMap{}
 	g.Expect(func() {
 		MustLoadMultiYamlOrJson("./testdata/loadMultiYaml.configmap.success.yaml", &cms)
+	}).ShouldNot(Panic())
+}
+
+func TestMustLoadMultiYaml_with_separator_success(t *testing.T) {
+	g := NewGomegaWithT(t)
+	cms := []corev1.ConfigMap{}
+	g.Expect(func() {
+		MustLoadMultiYamlOrJson("./testdata/loadMultiYaml.configmap.separator.success.yaml", &cms)
 	}).ShouldNot(Panic())
 }
 
