@@ -80,15 +80,17 @@ func AsStatusError(response *resty.Response, grs ...schema.GroupResource) error 
 		0,
 		false,
 	)
-
 	// if the response is a metav1.status use it's reason directly
 	var status metav1.Status
 	if json.Unmarshal([]byte(response.String()), &status) == nil && status.Reason != "" {
 		statusError.ErrStatus.Reason = status.Reason
+		if status.Message != "" {
+			statusError.ErrStatus.Message = status.Message
+		}
 	}
 
 	// if the response is a metav1.status use it's reason directly
-	if s, ok := response.Error().(*metav1.Status); ok {
+	if s, ok := response.Error().(*metav1.Status); ok && (*s != metav1.Status{}) {
 		statusError.ErrStatus = *s
 	}
 

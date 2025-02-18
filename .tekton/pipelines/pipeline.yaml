@@ -74,6 +74,8 @@ spec:
           value: $(params.git-revision.url)
         - name: repo-ref
           value: $(tasks.calculate-revision.results.revision)
+        - name: tools-image
+          value: registry.alauda.cn:60080/devops/kubectl-devops:v3.3.0-beta.8.g81eac823
       runAfter:
         - git-clone
       taskRef:
