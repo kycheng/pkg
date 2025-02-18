@@ -70,7 +70,7 @@ var _ = Describe("Test AsStatusError", func() {
 	})
 
 	JustBeforeEach(func() {
-		response, _ = resty.New().R().Get(server.URL + "/test")
+		response, _ = resty.New().R().SetError(&metav1.Status{}).Get(server.URL + "/test")
 	})
 
 	When("server return 200", func() {
@@ -163,7 +163,7 @@ var _ = Describe("Test AsStatusError", func() {
 			newTestServer(func(w http.ResponseWriter, r *http.Request) {
 				status := errors.NewBadRequest("test")
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(status)
+				json.NewEncoder(w).Encode(status.Status())
 			})
 			DeferCleanup(func() {
 				server.Close()
@@ -179,3 +179,8 @@ var _ = Describe("Test AsStatusError", func() {
 		})
 	})
 })
+
+func TestErrors(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Errors Suite")
+}
