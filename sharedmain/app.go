@@ -607,6 +607,9 @@ func (a *AppBuilder) Run(startFuncs ...func(context.Context) error) error {
 		}
 	}()
 
+	// will init a client if not already initiated
+	a.initClient(nil)
+
 	// adds a http server if there are any endpoints registered
 	if a.container != nil {
 		// adds profiling and health checks
