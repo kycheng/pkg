@@ -53,6 +53,10 @@ type ParamSpec struct {
 	// If Enum is not set, no input validation is performed for the param.
 	// +optional
 	Enum []string `json:"enum,omitempty"`
+
+	// Optional indicates whether the parameter is optional.
+	// +optional
+	Optional bool `json:"optional,omitempty"`
 }
 
 // ParamSpecs is a list of ParamSpec
